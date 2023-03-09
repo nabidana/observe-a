@@ -1,0 +1,79 @@
+*/ 옵저버 패턴
+주체가 설정한 객체만 주체에서 전달하고자 하는 내용을 전달하는 패턴
+ex) 유저와 관리자가 잇을때, 관리자는 자신이 정한 유저에게만 공지사항메세지를 전달한다.
+관리자가 정하지 않은 유저에게는 공지사항을 전달하지 않는다.
+반대로, 클라이언트가 업데이트 되는것도 옵저버 관리자에게 메세지를 전달해주어서 업데이트를 시킨다.
+
+옵저버 패턴의 파일 구성도
+
+1. Observer.java
+메세지를 전달한 옵저버 클래스 생성
+*/
+
+public class Observer {
+    public String msg; //String형 msg 선언.
+
+    public void receive(String msg){ //receive 함수 생성. 함수 안에는 String형 msg 입력
+        System.out.println(this.msg + "에서 메시지를 받음 : " + msg);
+    }
+}
+
+/*
+2. User1.java
+관리자와 연결할 클라이언트측. 유저를 선언한다.
+
+*/
+
+public class User1 extends Observer{ //User1 class를 Observer에서 상속한다는 뜻.
+    public User1(String msg){
+        this.msg = msg;
+    }
+}
+
+/*
+3. Notice.java
+옵저버 패턴의 추가, 연결해제, 공지사항 메세지 전달 등을 맡을 옵저버의 관리 및 기능역할을 하는 클래스를 선언하기 위해서 만든다.
+
+/*
+import java.util.*; //list배열 함수를 사용하기 위해서 선언
+
+public class Notice {
+    private List<Observer> observers = new ArrayList<Observer>(); //Observer 타입의 lits배열 observers 변수를 선언한다.
+    
+    public void attach(Observer observer){ //attach 함수를 선언한다.
+        observers.add(observer);           //observers에 Observer 타입의 observer을 추가한다.
+    }
+
+    public void detach(Observer observer){ //detach 함수를 선언한다.
+        observers.remove(observer);        //observers에 Observer 타입의 observer을 추가한다.
+    }
+
+    public void notifyObservers(String msg){ //notifyObservers 함수를 선언한다.
+        for (Observer o:observers) {         //Observer 의 처음부터 끝까지 observer.receive 함수를 실행한다.
+            o.receive(msg);
+        }
+    }
+}
+
+/*
+4. main.java
+옵저버 패턴을 실행할 메인 자바 파일.
+*/
+
+public class mainf {
+    public static void main(String[] args) {
+        Notice notice = new Notice();
+        User1 user1 = new User1("유저1");
+        User2 user2 = new User2("유저2");
+
+        notice.attach(user1); //user1 추가
+        notice.attach(user2); //user2 추가
+
+        String msg = "공지사항입니다~!"; //메세지 선언
+        notice.notifyObservers(msg);    //메세지전달 함수 실행
+
+        notice.detach(user1); //user1 제거
+        msg = "HELLO THERE"; //메세지 선언
+        notice.notifyObservers(msg); //메세지전달 함수 실행
+    }
+}
